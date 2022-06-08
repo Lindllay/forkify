@@ -1,6 +1,7 @@
 import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
+import resultsView from './views/resultsView.js';
 
 import 'core-js/stable'; // polyfilling everything else
 import 'regenerator-runtime/runtime'; // polyfilling async/await
@@ -26,11 +27,15 @@ const controlRecipes = async function () {
 
 const controlSearchResults = async function () {
   try {
+    resultsView.renderSpinner();
+    // 1) Get search query
     const query = searchView.getQuery();
 
     if (!query) return;
-
+    // 2) Load search results
     await model.loadSearchResults(query); // Nie przypisuję wyniku do zmiennej, bo ta funkcja nic nie zwraca. Ona jedynie manipuluje obiektem state.
+
+    // 3) Render results
     console.log(model.state.search.results);
   } catch (err) {
     console.log(err);
