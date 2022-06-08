@@ -11,7 +11,7 @@ const timeout = function (s) {
 
 export const getJSON = async function (url) {
   try {
-    const res = await Promise.race([fetch(url), timeout(TIMEOUT_SEC)]); // Po 0.5 sec, funkcja setTimeout jest rejected (rejected promise) i podaje error message. Następnie jeżeli jest to pierwszy rezultat w Promise.race spośród fetch(url) oraz timeout(0.5), to przerywa fetchowanie i rzuca błąd, który później jest ponownie rzucany w model.js
+    const res = await Promise.race([fetch(url), timeout(TIMEOUT_SEC)]); // Po 10 sec, funkcja setTimeout jest rejected (rejected promise) i podaje error message. Następnie jeżeli jest to pierwszy rezultat w Promise.race spośród fetch(url) oraz timeout(10), to przerywa fetchowanie i rzuca błąd, który później jest ponownie rzucany w model.js
     const { data } = await res.json();
 
     if (!res.ok) throw new Error(`${data.message} (${res.status})`);
