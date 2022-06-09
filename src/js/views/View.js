@@ -3,6 +3,9 @@ export default class View {
   _data;
 
   render(data) {
+    if (!data || (Array.isArray(data) && data.length === 0))
+      return this.renderError(); // Jeśli nie ma danych, lub jeśli są dane, ale te dane są arrayem, którego długość to 0, to zwróć renderError()
+
     this._data = data;
     const markup = this._generateMarkup();
     this._clear();
