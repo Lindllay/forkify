@@ -40,12 +40,11 @@ const controlSearchResults = async function () {
     await model.loadSearchResults(query); // Nie przypisuję wyniku do zmiennej, bo ta funkcja nic nie zwraca. Ona jedynie manipuluje obiektem state.
 
     // 3) Render results
-
-    // resultsView.render(model.state.search.results);
     resultsView.render(model.getSearchResultsPage());
 
     // 4) Render initial pagination button
     paginationView.render(model.state.search);
+    console.log(model.state.search);
   } catch (err) {
     console.log(err);
   }
