@@ -27,7 +27,6 @@ export const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients,
     };
-    console.log(state.recipe);
   } catch (err) {
     console.error(err);
     throw err; // re-throwing an error. Czyli po prostu throwuje jeszcze raz error, który złapałem
@@ -38,7 +37,6 @@ export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
     const data = await getJSON(`${API_URL}?search=${query}`);
-    console.log(data);
 
     state.search.results = data.recipes.map(rec => {
       return {
