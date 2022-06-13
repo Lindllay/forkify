@@ -59,3 +59,11 @@ export const getSearchResultsPage = function (page = state.search.page) {
   const end = page * state.search.resultsPerPage; // 9 (bo slice nie wyświetla dziesiątej/ostatniej pozycji)
   return state.search.results.slice(start, end); // slice nie wyświetla ostatniej liczby, więc w rzeczywistości wyświetli pozycje 0-9.
 };
+
+export const updateServings = function (newServings) {
+  state.recipe.ingredients.forEach(ing => {
+    ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
+    // newQt = oldQt * newServings / oldServings
+  });
+  state.recipe.servings = newServings;
+};
