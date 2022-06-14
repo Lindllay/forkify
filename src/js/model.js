@@ -10,6 +10,7 @@ export const state = {
     page: 1,
     resultsPerPage: RES_PER_PAGE,
   },
+  bookmarks: [],
 };
 
 export const loadRecipe = async function (id) {
@@ -27,6 +28,12 @@ export const loadRecipe = async function (id) {
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients,
     };
+
+    if (state.bookmarks.some(bookmark => bookmark.id === id)) {
+      state.recipe.bookmarked = true;
+    } else {
+      state.recipe.bookmarked = false;
+    }
   } catch (err) {
     console.error(err);
     throw err; // re-throwing an error. Czyli po prostu throwuje jeszcze raz error, który złapałem
@@ -46,6 +53,7 @@ export const loadSearchResults = async function (query) {
         image: rec.image_url,
       };
     });
+    state.search.page = 1; // resetuje page przy każdym załadowaniu nowej listy
   } catch (err) {
     console.error(err);
     throw err; // re-throw
@@ -63,7 +71,25 @@ export const getSearchResultsPage = function (page = state.search.page) {
 export const updateServings = function (newServings) {
   state.recipe.ingredients.forEach(ing => {
     ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
-    // newQt = oldQt * newServings / oldServings
   });
   state.recipe.servings = newServings;
 };
+
+export const addBookmark = function (recipe) {
+  // add bookmark
+  state.bookmarks.push(recipe);
+
+  // mark current recipe as bookmark
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true; // dodaję właściwość bookmarked o wartości true do state.recipe, gdy... spełniony zostanie ten warunek. ale nie rozumiem tego warunku, już się pogubiłem czym jest recipe.id a czym state.recipe.id. W komentarzach piszą, że sprawdzanie tego warunku nie ma sensu, bo recipe.id i state.recipe.id to to samo
+};
+
+export const deleteBookmark = function (id) {
+  // Delete bookmark
+  const index = state.bookmarks.findIndex(el => el.id === id); // gdy warunek w findIndex zostanie spełniony, to do zmiennej index podany zostanie index, w którym znajduje się bookmark do usunięcia.
+  state.bookmarks.splice(index, 1); // Następnie biorę ten index i usuwam z dany bookmark z arraya.
+
+  // Mark current recipe as NOT bookmarked
+  if (id === state.recipe.id) state.recipe.bookmarked = false;
+};
+
+// podobno to częsty pattern w programowaniu, że gdy coś dodaję, to podaję wszystkie dane (jak w addBookmark function), a jak usuwam, to tylko id
