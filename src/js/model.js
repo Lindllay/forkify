@@ -75,12 +75,17 @@ export const updateServings = function (newServings) {
   state.recipe.servings = newServings;
 };
 
+const persistBookmarks = function () {
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
+
 export const addBookmark = function (recipe) {
   // add bookmark
   state.bookmarks.push(recipe);
 
   // mark current recipe as bookmark
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true; // dodaję właściwość bookmarked o wartości true do state.recipe, gdy... spełniony zostanie ten warunek. ale nie rozumiem tego warunku, już się pogubiłem czym jest recipe.id a czym state.recipe.id. W komentarzach piszą, że sprawdzanie tego warunku nie ma sensu, bo recipe.id i state.recipe.id to to samo
+  persistBookmarks();
 };
 
 export const deleteBookmark = function (id) {
@@ -90,6 +95,12 @@ export const deleteBookmark = function (id) {
 
   // Mark current recipe as NOT bookmarked
   if (id === state.recipe.id) state.recipe.bookmarked = false;
+  persistBookmarks();
 };
 
-// podobno to częsty pattern w programowaniu, że gdy coś dodaję, to podaję wszystkie dane (jak w addBookmark function), a jak usuwam, to tylko id
+const init = function () {
+  const storage = localStorage.getItem('bookmarks');
+  if (storage) state.bookmarks = JSON.parse(storage);
+};
+init();
+// console.log(state.bookmarks);
