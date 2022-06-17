@@ -20,3 +20,23 @@ export const getJSON = async function (url) {
     throw err; // re-throwing error. Muszę zrobić re-throw, żeby promise było rejected. Gdy mam jedną async funkcję wewnątrz drugiej, to chcąc łapać errory w tej zewnętrznej, muszę zrobić re-throwa tego errora w wewnętrznym
   }
 };
+export const sendJSON = async function (url, uploadData) {
+  try {
+    const res = await Promise.race([
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // informacja dla API, że dane przesyłam w formie JSON, dzięki czemu może z powodzeniem je zaakceptować
+        },
+        body: JSON.stringify(uploadData),
+      }),
+      timeout(TIMEOUT_SEC),
+    ]);
+    const { data } = await res.json(); // API zwraca dane spowrotem, dlatego je awaituję. Jonas mówi, ze to ważne, żeby API zwracało po wysłaniu mu danych, własne dane
+
+    if (!res.ok) throw new Error(`${data.message} (${res.status})`);
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
